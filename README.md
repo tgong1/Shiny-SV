@@ -15,4 +15,4 @@ runGitHub("Shiny-SoSV", "tgong1")
 ```
 
 # Usage
-See [Shiny-SoSV] (https://hcpcg.shinyapps.io/Shiny-SoSV/) User Guide and Example Use Cases pages for further details regarding the usage of Shiny-SoSV. 
+See [Shiny-SoSV](https://hcpcg.shinyapps.io/Shiny-SoSV/) User Guide and Example Use Cases pages for further details regarding the usage of Shiny-SoSV. 
