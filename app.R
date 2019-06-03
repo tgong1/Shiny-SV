@@ -14,15 +14,34 @@ ui <- navbarPage(
            #h4("Shiny-SoSV can be access here"),
            #actionButton('jumpToEvaluation', 'Shiny-SoSV'),
            br(),
-           p("Acquired structural variants play a significant role in cancer development and evolution. Accurate detection of these, often complex, genomic rearrangements from whole genome sequencing data is influenced by many variables, the effects of which are not always linear. With increasing demand for application of whole genome sequencing in clinical settings, there is an unmet need for clinician scientists to easily make bioinformatically-driven decisions for every unique patient and sample. To address this, we have developed Shiny-SoSV, an interactive web application for evaluating the effects of various variables on somatic structural variant calling, thereby enabling users to quickly make relevant sequencing and bioinformatics decisions."),
+           p("Somatic structural variants play a significant role in cancer development and evolution. Accurate detection of these complex variants from whole genome sequencing data is influenced by many variables, the effects of which are not always linear.",
+             "With increasing demand for the application of whole genome sequencing in clinical settings, clinical genomicists are required to make technical decisions at an ever faster pace. ", 
+             "To address this, we have developed Shiny-SoSV, an interactive web application for evaluating the effects of five common variables on the sensitivity and precision of somatic structural variant calls, thereby enabling users to quickly make informed sequencing and bioinformatics decisions early on in their study design."),
            p("If you use this web app, please", em("cite it.")),
            br(),
            actionButton('jumpToInstallation', 'Installation'),
+           p("Detailed description of how to obtain and install your own copy of Shiny-SoSV."),
+           br(),
            actionButton('jumpToUserGuide', 'User Guide'),
+           p("Explanation of Shiny-SoSV’s user interface."),
+           br(),
            actionButton('jumpToUseCase', 'Example Use Cases'),
-           p("Installation: Detailed description of how to obtain and install your own copy of Shiny-SoSV."),
-           p("User Guide: Description (explanation) of Shiny-SoSV’s web app interface."),
-           p("Example Use Cases: Hypothetical scenarios of highlighting the Shiny-SoSV’s utility.")),
+           p("Hypothetical scenarios of highlighting the Shiny-SoSV’s utility.")
+           #fluidRow(column(2,actionButton('jumpToInstallation', 'Installation')),
+           #         column(10, p("Explanation of Shiny-SoSV’s user interface.")
+           #         )),
+           #br(),
+           #fluidRow(column(2, actionButton('jumpToUserGuide', 'User Guide')),
+           #         column(10, p("Explanation of Shiny-SoSV’s user interface.")
+           #         )),
+           #br(),
+           #fluidRow(column(2, actionButton('jumpToUseCase', 'Example Use Cases')),
+           #         column(10, p("Hypothetical scenarios of highlighting the Shiny-SoSV’s utility.")
+           #         ))
+           
+           
+           ),
+  
   tabPanel(shinyjs::useShinyjs(),title = "Shiny-SoSV", value = "evaluation",#tweaks,
            sidebarLayout(fluid=FALSE,sidebarPanel(
                                       checkboxGroupInput(inputId = "SVCaller3",
@@ -83,81 +102,102 @@ ui <- navbarPage(
                     width=9))
     ),
   tabPanel(title = "Installation", value = "installation",
-           h5("Shiny-SoSV is hosted on shinyapp.io by RStudio with source code hosted on the GitHub repository tgong1/Shiny-SoSV."),
-           strong("Direct Web Access"),
-           p("The easiest way to access Shiny-SoSV is via the direct URL,", em("https://hcpcg.shinyapps.io/Shiny-SoSV/.")),
+           h4("Direct Web Access"),
+           p("Shiny-SoSV is hosted on shinyapp.io. The easiest way to access Shiny-SoSV is via the direct URL,", em("https://hcpcg.shinyapps.io/Shiny-SoSV/.")),
            #br(),
-           strong("Launching from the GitHub repository"),
-           p("Shiny-SoSV can also be launched from within a R session with command", 
-             code("runGitHub('Shiny-SoSV', 'tgong1')"),".", 
-             "You will need to install R package Shiny, Shinyjs, gridExtra, ggplot2 and ggsci."),
-           strong("GitHub"),
-           p("Anyone wishing a local copy of, or contribute to Shiny-SoSV, can obtain it via GitHub. To copy the repo to your local machine, use the command:",
-             code("git clone https://github.com/tgong1/Shiny-SoSV.git"),".",
-             "The data folder of the repo contains all evaluation results presented underlying the web app."),
+           h4("Launching from the GitHub repository"),
+           p("Download R or RStudio and run the following commands once to set up the environment:"), 
+           code("install.packages(c('shiny','shinyjs','ggplot2', 'gridExtra', 'ggsci'))"),
            br(),
-           p("Note to SV caller developers:",
-             "If you would like to include your SV caller in Shiny-SoSV, please get in touch. We would be able to provide you a copy of the simulated aligned bam files to run your software on!")
+           br(),
+           p("Run the shiny app with command in R:"),
+           code("runGitHub('Shiny-SoSV', 'tgong1')"),
+           br(),
+           br(),
+           h4("GitHub"),
+           p("Souce code is available at the GitHub repository tgong1/Shiny-SoSV."),
+           p("To copy the repo to your local machine, use the command:"),
+           code("git clone https://github.com/tgong1/Shiny-SoSV.git"),
+           br(),
+           br(),
+           p("The data_SV and scripts_R folders of the repo contains all evaluation results and R script of prediction model fitting respectively underlying the web app."),
+           br(),
+           strong("Note to SV caller developers:"),
+           p("If you would like to include your SV caller in Shiny-SoSV, please get in touch. We would be able to provide you a copy of the simulated aligned bam files to run your software on!")
            
   ),
   tabPanel(title = "User Guide", value = "userguide",
            h5("Shiny-SoSV provides predictions of the impact of common variables (SV caller, sequencing coverage, tumour allele frequencies, tolerance of breakpoint precision) on the sensitivity and precision of somatic SV calls through interactive plots."),
            img(src = "UserGuide.png",height=509, width=1060),
            #img(src = "UserGuide.png",height=764, width=1590),
-           p("[1] Evaluation measurement (s): Either or both performance measures (sensitivity and precision) can be evaluated. These values are shown on the y-axes, with 0 indicating poor performance and 1 for perfect performance. Confidence intervals of the predictions are shown by flanking grey lines."),
+           p(span("[1]"), "Evaluation measurement (s): Either or both performance measures (sensitivity and precision) can be evaluated. These values are shown on the y-axes, with 0 indicating poor performance and 1 for perfect performance. Confidence intervals of the predictions are shown by flanking grey bands."),
            h5("One of four predictors can be plotted on the x-axis using the “Evaluation across” radio button, including:"),
-           p("[2] “Tumour purity/VAF”: the proportion of variant allele in the tumour sample."),
-           p("[3] “Tumour coverage”: the depth of sequencing coverages of the tumour sample."),
-           p("[4] “Normal coverage”: the depth of sequencing coverages of the normal sample."),
+           p("[2] “Tumour purity/VAF”: proportion of sequencing reads supporting the variant in the tumour sample."),
+           p("[3] “Tumour coverage”: the depth of sequencing coverage of the tumour sample."),
+           p("[4] “Normal coverage”: the depth of sequencing coverage of the normal sample."),
            p("[5] “Breakpoint precision threshold”: the precision of the breakpoint calls in nucleotide units."),
-           h5("Additional predictor variables can be examined and visualized using sidebar. In general, checkboxes allow additional prediction lines to be added/removed from the plots, while slider bars allow different values of the corresponding variable to be altered in the prediction. In particular:"),
-           p("[6] SV Caller(s): One or more, and combinations of, SV callers can be examined (distinguished by line colour in the plots). Combination of SV callers can be examined as “Union” or “Interaction” sets, where A∪B sets are SV calls identified by either caller A or caller B, while A∩B sets are SV calls identified by BOTH A and B."),
-           p("[7] Tumour purity/VAF: Up to three values of this predictor can be visualized on the plots (distinguished by line type on the plots) with “Evaluation across” predictor as “Tumour coverage”, using the slider bar and checkboxing one or both pre-set values of 0.2 & 0.8, which were designed to be the lower and upper bounds of histopathology tumour purity values. If “Evaluate Across” “Tumour Purity/VAF” [2] is selected, changes to this is greyed out (disabled)."),
-           p("[8] Tumour Coverage: As with “Evaluation across” predictor as “Tumour purity/VAF”, “Normal coverage” or “Breakpoint precision threshold”, the two preset values are 30x and 60x, reflecting the typical depth of sequencing coverage for tumour samples. If “Evaluate Across” “Tumour Coverage” [3] is selected, changes to this is greyed out (disabled)."),
-           p("[9] Normal Coverage: Only one value can be evaluated at any one time. If “Evaluate Across” “Normal Coverage” [4] is selected, changes to this is greyed out (disabled)."),
-           p("[10] Breakpoint Precision: Only one value can be evaluated at any one time. If “Evaluate Across” “Breakpoint Precision” [4] is selected, changes to this is greyed out (disabled)."),
+           h5("Additional predictor variables can be examined and visualised using the sidebar. In general, checkboxes allow additional prediction lines to be added/removed from the plots, while slider bars allow different values of the corresponding variable to be altered in the prediction. In particular:"),
+           p("[6] SV Caller(s): One or more, and combinations of, SV callers can be examined (distinguished by line colour in the plots).", 
+             "Combination of SV callers can be examined as “Union” or “Interaction” sets, where A∪B sets are SV calls identified by either caller A or caller B, while A∩B sets are SV calls identified by BOTH A and B."),
+           p("[7] Tumour purity/VAF: Up to three values of this predictor can be visualised on the plots (distinguished by line type on the plots) evaluating across “Tumour coverage” [3].", 
+             "Two of the values are preset to 0.2 and 0.8 (as checkboxes) and the third can be any value between 0.05 and 0.95 (adjustable via the sliderbar).",
+             "When evaluating across “Normal coverage” [4] or “Breakpoint precision threshold” [5], only one VAF values can be elected, and this can be done via the sliderbar.",
+             "When evaluating across “Tumour purity/VAF” [2], this option is disabled (greyed out)."),
+           p("[8] Tumour Coverage: When evaluating across “Tumour purity/VAF” [2], “Normal coverage” [4] or “Breakpoint precision threshold” [5], three Tumour Coverage values can be examined simultaneously, including two preset values of 30x and 60x and a third definable by the user via the slider bar.", 
+             "When evaluating across“Tumour Coverage” [3], this option is disabled (greyed out)."),
+           p("[9] Normal Coverage: Only one value can be evaluated at any one time.", 
+             "When evaluating across “Normal Coverage” [4], this option is disabled."),
+           p("[10] Breakpoint Precision: Only one value can be evaluated at any one time.",
+             "When evaluating across “Breakpoint Precision” [4], this option is disabled."),
+           tags$hr(),
            strong("A note on the parameters:"),
-           p("It should be noted histopathological estimates of tumour purity is typically the upper bound of observed VAF in genomics studies in part due to the likelihood of the presence of sub-clonality."),
-           p("Breakpoint precision threshold is the maximum allowed difference of called breakpoint to the simulated breakpoints, to be considering as true positive call.")
+           tags$ul(
+             tags$li("It should be noted histopathological estimates of tumour purity is typically the upper bound of observed VAF in genomics studies in part due to the likelihood of the presence of sub-clonality."), 
+             tags$li("Breakpoint precision threshold is the maximum difference (in bp) between what was reported by the corresponding SV caller and what was simulated.")
+           )
            ),
   tabPanel(title = "Example Use Cases", value = "usecase",
            h5("Hypothetical scenarios of highlighting the Shiny-SoSV’s utility:"),
-           fluidRow(column(11,h5("Scenario 1: I have a cohort of matched-normal cancer samples, each with different histopathology-estimates of tumor purity. Our WGS (or bioinformatics) pipeline uses Lumpy, which could potentially be changed, though we’d rather not have to. How much coverage would I need to have at least 80% sensitivity and >90% precision on somatic SV calls.")),
+           fluidRow(column(11,h5("Scenario 1: I have a cohort of matched-normal cancer samples, each with different histopathology-estimates of tumor purity.", 
+                                 "Our WGS (or bioinformatics) pipeline uses Lumpy, which could potentially be changed, though we’d rather not have to.", 
+                                 "How much coverage would I need to achieve at least 80% sensitivity and >90% precision on somatic SV calls.")),
                     column(1, 
                            actionButton("S1", label = "", icon = icon("angle-down"), class = "btn btn-info")
                     )),
+           hidden(htmlOutput(outputId = "text_S1")),
            hidden(imageOutput(outputId = "image_S1")),
-           hidden(textOutput(outputId = "text_S1")),
-           
-           fluidRow(column(11,h5("Scenario 2: I have a handful of samples, about 5-10, my boss is wondering if we can generate low pass coverage on the matched normal and still obtain >80% sensitivity and precision. We haven’t decided on which SV caller to use yet.")),
+
+           fluidRow(column(11,h5("Scenario 2: I have a handful of tumour samples sequenced to 60x,", 
+                                 "I am wondering if I can generate low pass coverage on the matched normal and still obtain good sensitivity and precision.", 
+                                 "We haven’t decided on which SV caller to use yet.")),
                     column(1, 
                            actionButton("S2", label = "", icon = icon("angle-down"), class = "btn btn-info")
                     )),
+           #hidden(textOutput(outputId = "text_S2")),
+           hidden(htmlOutput(outputId = "text_S2")),
            hidden(imageOutput(outputId = "image_S2")),
-           #hidden(textOutput(outputId = "text_S2.1")),
-           #tags$head(tags$style("#text_S2.1{color: red;font-size: 20px;font-style: italic}")),
-           hidden(textOutput(outputId = "text_S2")),
            
-           fluidRow(column(11,h5("Scenario 3: I have a cancer sample with estimated tumor purity estimated of about 20%. It is a precious sample, and we want to call confident SVs. How much should we sequence to get >90% sensitivity and precision. Is it even possible?")),
+           fluidRow(column(11,h5("Scenario 3: I have a cancer sample with estimated tumor purity estimated of about 20%.", 
+                                 "It is a precious sample, and we want to call confident SVs.", 
+                                 "How much should we sequence to get >90% sensitivity and precision. Is it even possible?")),
                     column(1, 
                            actionButton("S3", label = "", icon = icon("angle-down"), class = "btn btn-info")
                     )),
+           hidden(htmlOutput(outputId = "text_S3")),
            hidden(imageOutput(outputId = "image_S3")),
-           hidden(textOutput(outputId = "text_S3")),
            
-           
-           fluidRow(column(11,h5("Scenario 4: I am a clinical geneticist and I have a patient whom we cannot find a pathological SNV/indel from a 30x WGS. We think the driver mutation may be a structural variant. We don’t know much about SVs or how to call them. Which SV caller should we use? Our NGS data suggested the tumor purity is about 50%. Do we need to sequence more? We care about both false positives and false negatives, but would prefer to be confident in what we find than finding more of something that may be false.")),
+           fluidRow(column(11,h5("Scenario 4: I am a clinical geneticist and I have a patient whom we cannot find a pathological SNV/indel from a 30x WGS.",
+                                 " We think the driver mutation may be a structural variant. We don’t know much about SVs or how to call them.", 
+                                 "Which SV caller should we use? Our NGS data suggested the tumor purity is about 50%.", 
+                                 "Do we need to sequence more?", 
+                                 "We care about both false positives and false negatives, but would prefer to be confident in what we find than finding more of something that may be false.")),
                     column(1, 
                            actionButton("S4", label = "", icon = icon("angle-down"), class = "btn btn-info")
                     )),
+           hidden(htmlOutput(outputId = "text_S4")),
            hidden(imageOutput(outputId = "image_S4")),
-           hidden(textOutput(outputId = "text_S4")),
-           
-           
            p()
            )
-                          
-                
 )
 
 server <- function(input, output, session)({
@@ -184,65 +224,58 @@ server <- function(input, output, session)({
   observeEvent(input$S1, {
      toggle('image_S1')
      output$image_S1 <- renderImage({
-       filename <- normalizePath(file.path('./images',paste('FigureS1.1', '.png', sep='')))
-       list(src = filename, height=382, width=795, alt="Figure 1")
-       #list(src = filename, alt="Figure 1")
+       filename <- normalizePath(file.path('./images',paste('FigureS1_title', '.png', sep='')))
+       list(src = filename, height=382, width=790, alt="Figure 1")
      }, deleteFile = FALSE)
   })
   
   observeEvent(input$S1, {
     toggle('text_S1')
     #output$text_S1 <- renderText({"ahh you pressed it"})
-    output$text_S1 <- renderText({c("To address this using Shiny-SoSV, as demonstrated in Figure 1, the user would select both “Sensitivity” and “Precision” as evaluation measurements and “Tumor purity/VAF” as the “Evaluation across” parameter. On the sidebar, choose all SV callers and different tumor coverages, e.g. 30x, 60x and 90x, for comparison, while fixing all other parameters as default.",
-       "From this, it should be immediately obvious that tumor purity/VAF has a great impact on sensitivity, while little impact on precision, particularly for VAF within 5% and 30%. With VAF > 30%, improvements in sensitivity notably slows for all SV callers, with Manta showing relatively larger improvements until it reaches the limit at this setting.", 
-       "Considering the objective (at least 80% sensitivity and > 90% precision level), the user could choose to keep Lumpy in their pipeline and consider excluding all samples with tumor purity < 30%, allowing them to use any extra funds to sequence the remaining tumor samples to 90x depth of coverage. Alternatively, the user could switch to using Manta, sequencing at 60x, and including all samples.")})
+    output$text_S1 <- renderText({paste("To address this using Shiny-SoSV, as demonstrated in Figure 1, the user would evaluate “Sensitivity” and “Precision” across “Tumor purity/VAF”. On the sidebar, choose any (combination of) SV caller(s), including Lumpy (the implemented caller in this scenario). Here, Lumpy, GRIDSS and the union set of them have been selected. Three tumor coverages have also been selected for comparison: presets 30x and 60x selected via the checkboxes and 90x via slider bar. All other parameters are left as default.",
+                                    "<br>","From this, it should be immediately obvious that tumor purity has a great impact on sensitivity, while little impact on precision, particularly for tumour purity within 5% and 30%. In addition, the union set of Lumpy and GRIDSS has the highest sensitivity across all tumour purity, but slightly lower precision.", 
+                                   "Considering the objective (sensitivity > 80% and precision > 90%), the user could choose to keep Lumpy in their pipeline and consider excluding all samples with tumor purity < 30%, allowing them to use any extra funds to sequence the remaining tumor samples to 90x depth of coverage. Alternatively, the user could include GRIDSS into the pipeline, sequencing at 60x, and including all samples.")})
   })
   
   observeEvent(input$S2, {
     toggle('image_S2')
     output$image_S2 <- renderImage({
-      filename <- normalizePath(file.path('./images',paste('FigureS2.1', '.png', sep='')))
-      list(src = filename, height=382, width=795, alt="Figure 2")
+      filename <- normalizePath(file.path('./images',paste('FigureS2_title', '.png', sep='')))
+      list(src = filename, height=382, width=790, alt="Figure 2")
     }, deleteFile = FALSE)
   })
   
   observeEvent(input$S2, {
     toggle('text_S2')
-    #toggle('text_S2.1')
-    #output$text_S2.1 <- renderText({c("Figure2")})
-    output$text_S2 <- renderText({c("To address this using Shiny-SoSV, as demonstrated in Figure 2, the user would select both “Sensitivity” and “Precision” as evaluation measurements and “Tumor purity/VAF” as the “Evaluation across” parameter. On the sidebar, choose all SV callers (Manta, Lumpy and GRIDSS) and different tumour coverages, e.g. 30x, 60x and 90x, for comparison and set a low normal coverage e.g. 15x.",
-                                    "From this, it should be immediately obvious that tumor purity/VAF has a great impact on sensitivity, while little impact on precision, particularly for VAF within 5% and 30%. With VAF > 30%, improvements in sensitivity notably slow for all SV callers, with Manta showing relatively larger improvements until it reaches the limit at this setting. The precision level is relatively high (around 90%) for all VAF, while it would not be possible to obtain > 80% sensitivity for samples with tumor purity < 20%.", 
-                                    "Any SV caller to use would obtain sensitivity greater than 80% at high tumor coverage of 90x, while Manta would have the highest sensitivity. Therefore, the user can choose to use Manta for all samples, sequencing at 90x tumor coverage. In case of budgetary constraints, another option is to use only samples with tumor purity > 40%, sequencing to 60x, and use Manta for SV calls in order to obtain > 80% sensitivity.")})
+    output$text_S2 <- renderText({paste("There are several ways to address this. As we don’t know the expected tumour purity of these samples, we could evaluate across “Tumour Purity/VAF”, fixing Tumour coverage at 60x and Normal coverage at the lowest option of 15x, as shown in Figure 2. Selecting all three SV callers show that it is possible to achieve sensitivity above 80% with manta but only the tumour sample is at least 40% pure. Further selecting the union set of Manta &GRIDSS (the two best performing callers under this setting) suggests we might be able to reach > 80% sensitivity with tumour purity as low as 25%.",
+                                        "<br>","Another way to address this question would be to evaluate across “Normal coverage” and setting Tumour coverage to 60x. Again, as we don’t know the purity of the tumour samples, we may need to explore a bit. For example, setting Tumour purity to 50%, we see that the depth of coverage of the normal sample does not actually have very significant impact on the sensitivity or precision. Rather, it is the SV callers that have the biggest impact. Again, we see sensitivity exceeds 80% with Manta alone, providing tumour purity is > 50%. Lowering Tumour purity to 25%, we note the need to use a combination of SV callers in order to achieve the desire sensitivity.")})
   })
   
   observeEvent(input$S3, {
     toggle('image_S3')
     output$image_S3 <- renderImage({
-      filename <- normalizePath(file.path('./images',paste('FigureS3.1', '.png', sep='')))
-      list(src = filename, height=382, width=795, alt="Figure 3")
+      filename <- normalizePath(file.path('./images',paste('FigureS3_title', '.png', sep='')))
+      list(src = filename, height=382, width=790, alt="Figure 3")
     }, deleteFile = FALSE)
   })
   
   observeEvent(input$S3, {
     toggle('text_S3')
-    output$text_S3 <- renderText({c("To address this using Shiny-SoSV, as demonstrated in Figure 3, the user would select both “Sensitivity” and “Precision” as evaluation measurements and “Tumor coverage” as the “Evaluation across” parameter. On the sidebar, the user can choose all SV callers and their union sets aiming to increase sensitivity and set tumour purity/VAF to 0.2, while fixing all other parameters as default.",
-                                    "From the evaluation plots, we can see a dramatic increase (from 50% to 80% by individual SV callers and from 55% to 85% by union call sets) on sensitivity when increasing tumor coverage, while precision level remains high >90%. Moving the slider bar from 30x (default) to 90x to increasing matched normal coverage has little improvement on sensitivity.", 
-                                    "Therefore, while >90% precision can easily be reached (regardless of SV caller, depth of sequencing coverage, or breakpoint precision threshold), it is far more difficult to attain sensitivity >85% with such a low tumour purity (20%). If we are to extrapolate on the plot shown, it may be possible to attain > 90% sensitivity with > 120x coverage on the tumour.")})
+    output$text_S3 <- renderText({paste("To address this using Shiny-SoSV, as demonstrated in Figure 3, the user can evaluate both “Sensitivity” and “Precision” across “Tumor coverage”. On the sidebar, the user can choose all SV callers and their union sets aiming to increase sensitivity and set tumour purity/VAF to 0.2, while fixing all other parameters as default.",
+                                    "<br>","From the evaluation plots, we can see a dramatic increase (from 50% to 80% by individual SV callers and from 55% to 85% by union call sets) on sensitivity when increasing tumor coverage, while precision level remains high >90%. Moving the slider bar from 30x (default) to 90x to increasing matched normal coverage has little improvement on sensitivity. Therefore, while >90% precision can easily be reached (regardless of SV caller, depth of sequencing coverage, or breakpoint precision threshold), it is far more difficult to attain sensitivity >85% with such low tumour purity (20%). If we are to extrapolate on the plot shown, it may be possible to attain > 90% sensitivity with > 120x coverage on the tumour.")})
   })
   
   observeEvent(input$S4, {
     toggle('image_S4')
     output$image_S4 <- renderImage({
-      filename <- normalizePath(file.path('./images',paste('FigureS4.1', '.png', sep='')))
-      list(src = filename, height=382, width=795, alt="Figure 4")
+      filename <- normalizePath(file.path('./images',paste('FigureS4_title', '.png', sep='')))
+      list(src = filename, height=382, width=790, alt="Figure 4")
     }, deleteFile = FALSE)
   })
   
   observeEvent(input$S4, {
     toggle('text_S4')
-    output$text_S4 <- renderText({c("To address this using Shiny-SoSV, as demonstrated in Figure 4, the user would select both “Sensitivity” and “Precision” as evaluation measurements and “Tumor coverage” as the “Evaluation across” parameter. On the sidebar, the user can choose all SV callers (Manta, Lumpy and GRIDSS) for comparison and set tumor purity/VAF value as 0.5, while fixing all other parameters as default.",
-                                    "From the evaluation in 30x tumor and normal coverage setting, the suggested SV caller with highest sensitivity is Manta, with 5% and 10% higher sensitivity than GRIDSS and Lumpy respectively. All SV callers can reach >90% precision. Considering the objective of confidence SV calling (high precision), the user can choose intersection sets of callers.", 
-                                    "Here, for example, using intersection set of Manta and GRIDSS would increase the precision by around 3%, however, result in sensitivity dropping to 60%. Evaluation of tumor coverage suggests deeper sequencing would improve sensitivity, with around 18% increased sensitivity when increasing tumor coverage from 30x to 90x.")})
+    output$text_S4 <- renderText({paste("To address this using Shiny-SoSV, as demonstrated in Figure 4, the user would select to evaluate both “Sensitivity” and “Precision” across “Tumor coverage”. On the sidebar, the user can choose all SV callers (Manta, Lumpy and GRIDSS) for comparison in the first instance, setting tumor purity to 0.5 and fixing all other parameters as default. With these settings, Manta has the highest sensitivity, with 5% and 10% higher sensitivity than GRIDSS and Lumpy respectively. All SV callers can reach >90% precision. Considering the user’s preference to miss calls rather than make false calls, they may want to consider using two different SV callers and taking the intersection callset. Here, for example, the intersection callset from Manta and GRIDSS would increase the precision by around 3%, however, it is worth noting that sensitivity does drop. This drop in sensitivity can be compensated (something linearly) with deeper sequencing of the tumour sample. These plots should provide sufficient information for users to make educated decisions tailored for the situation. ")})
   })
   
   
