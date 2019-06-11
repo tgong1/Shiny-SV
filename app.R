@@ -175,7 +175,10 @@ ui <- navbarPage(
                     )),
            #hidden(textOutput(outputId = "text_S2")),
            hidden(htmlOutput(outputId = "text_S2")),
-           hidden(imageOutput(outputId = "image_S2")),
+           hidden(imageOutput(outputId = "image_S2a")),
+           hidden(htmlOutput(outputId = "text_S2.1")),
+           hidden(imageOutput(outputId = "image_S2b")),
+           hidden(imageOutput(outputId = "image_S2c")),
            
            fluidRow(column(11,h5("Scenario 3: I have a cancer sample with estimated tumor purity estimated of about 20%.", 
                                  "It is a precious sample, and we want to call confident SVs.", 
@@ -186,7 +189,7 @@ ui <- navbarPage(
            hidden(htmlOutput(outputId = "text_S3")),
            hidden(imageOutput(outputId = "image_S3")),
            
-           fluidRow(column(11,h5("Scenario 4: I am a clinical geneticist and I have a patient whom we cannot find a pathological SNV/indel from a 30x WGS.",
+           fluidRow(column(11,h5("Scenario 4: I have a patient whom we cannot find a pathological SNV/indel from a 30x WGS.",
                                  " We think the driver mutation may be a structural variant. We don’t know much about SVs or how to call them.", 
                                  "Which SV caller should we use? Our NGS data suggested the tumor purity is about 50%.", 
                                  "Do we need to sequence more?", 
@@ -224,7 +227,7 @@ server <- function(input, output, session)({
   observeEvent(input$S1, {
      toggle('image_S1')
      output$image_S1 <- renderImage({
-       filename <- normalizePath(file.path('./images',paste('FigureS1_title', '.png', sep='')))
+       filename <- normalizePath(file.path('./images',paste('FigureS1', '.png', sep='')))
        list(src = filename, height=382, width=700, alt="Figure 1")
      }, deleteFile = FALSE)
   })
@@ -232,53 +235,74 @@ server <- function(input, output, session)({
   observeEvent(input$S1, {
     toggle('text_S1')
     #output$text_S1 <- renderText({"ahh you pressed it"})
-    output$text_S1 <- renderText({paste("To address this using Shiny-SoSV, as demonstrated in Figure 1, the user would evaluate “Sensitivity” and “Precision” across “Tumor purity/VAF”. On the sidebar, choose any (combination of) SV caller(s), including Lumpy (the implemented caller in this scenario). Here, Lumpy, GRIDSS and the union set of them have been selected. Three tumor coverages have also been selected for comparison: presets 30x and 60x selected via the checkboxes and 90x via slider bar. All other parameters are left as default.",
+    output$text_S1 <- renderText({paste("To address this using Shiny-SoSV, as demonstrated in the figure, the user would evaluate “Sensitivity” and “Precision” across “Tumor purity/VAF”. On the sidebar, choose any (combination of) SV caller(s), including Lumpy (the implemented caller in this scenario). Here, Lumpy, GRIDSS and the union set of them have been selected. Three tumor coverages have also been selected for comparison: presets 30x and 60x selected via the checkboxes and 90x via slider bar. All other parameters are left as default.",
                                     "<br>","From this, it should be immediately obvious that tumor purity has a great impact on sensitivity, while little impact on precision, particularly for tumour purity within 5% and 30%. In addition, the union set of Lumpy and GRIDSS has the highest sensitivity across all tumour purity, but slightly lower precision.", 
                                    "Considering the objective (sensitivity > 80% and precision > 90%), the user could choose to keep Lumpy in their pipeline and consider excluding all samples with tumor purity < 30%, allowing them to use any extra funds to sequence the remaining tumor samples to 90x depth of coverage. Alternatively, the user could include GRIDSS into the pipeline, sequencing at 60x, and including all samples.",
                                    "</p>")})
     })
   
   observeEvent(input$S2, {
-    toggle('image_S2')
-    output$image_S2 <- renderImage({
-      filename <- normalizePath(file.path('./images',paste('FigureS2_title', '.png', sep='')))
+    toggle('image_S2a')
+    output$image_S2a <- renderImage({
+      filename <- normalizePath(file.path('./images',paste('FigureS2a_title', '.png', sep='')))
       list(src = filename, height=382, width=700, alt="Figure 2")
     }, deleteFile = FALSE)
   })
   
   observeEvent(input$S2, {
     toggle('text_S2')
-    output$text_S2 <- renderText({paste("There are several ways to address this. As we don’t know the expected tumour purity of these samples, we could evaluate across “Tumour Purity/VAF”, fixing Tumour coverage at 60x and Normal coverage at the lowest option of 15x, as shown in Figure 2. Selecting all three SV callers show that it is possible to achieve sensitivity above 80% with manta but only the tumour sample is at least 40% pure. Further selecting the union set of Manta &GRIDSS (the two best performing callers under this setting) suggests we might be able to reach > 80% sensitivity with tumour purity as low as 25%.",
-                                        "<br>","Another way to address this question would be to evaluate across “Normal coverage” and setting Tumour coverage to 60x. Again, as we don’t know the purity of the tumour samples, we may need to explore a bit. For example, setting Tumour purity to 50%, we see that the depth of coverage of the normal sample does not actually have very significant impact on the sensitivity or precision. Rather, it is the SV callers that have the biggest impact. Again, we see sensitivity exceeds 80% with Manta alone, providing tumour purity is > 50%. Lowering Tumour purity to 25%, we note the need to use a combination of SV callers in order to achieve the desire sensitivity.",
+    output$text_S2 <- renderText({paste("There are several ways to address this. As we don’t know the expected tumour purity of these samples, we could evaluate across “Tumour Purity/VAF”, fixing Tumour coverage at 60x and Normal coverage at the lowest option of 15x, as shown in Figure 2a. Selecting all three SV callers show that it is possible to achieve sensitivity above 80% with manta but only if the tumour sample is at least 40% pure. Further selecting the union set of Manta &GRIDSS (the two best performing callers under this setting) suggests we might be able to reach > 80% sensitivity with tumour purity as low as 25%.",
                                         "</p>")})
+  })
+  
+  observeEvent(input$S2, {
+    toggle('text_S2.1')
+    output$text_S2.1 <- renderText({paste("Another way to address this question would be to evaluate across “Normal coverage” and setting Tumour coverage to 60x. Again, as we don’t know the purity of the tumour samples, we may need to explore a bit. For example, setting Tumour purity to 50% shown in Figure 2b, we see that the depth of coverage of the normal sample does not actually have very significant impact on the sensitivity or precision. Rather, it is the SV callers that have the biggest impact. Again, we see sensitivity exceeds 80% with Manta alone, providing tumour purity is > 50%. Lowering Tumour purity to 25% shown in Figure 2c, we note the need to use a combination of SV callers in order to achieve the desire sensitivity.",
+                                        "</p>")})
+  })
+  
+  observeEvent(input$S2, {
+    toggle('image_S2b')
+    output$image_S2b <- renderImage({
+      filename <- normalizePath(file.path('./images',paste('FigureS2b_title', '.png', sep='')))
+      list(src = filename, height=382, width=700, alt="Figure 2")
+    }, deleteFile = FALSE)
+  })
+  
+  observeEvent(input$S2, {
+    toggle('image_S2c')
+    output$image_S2c <- renderImage({
+      filename <- normalizePath(file.path('./images',paste('FigureS2c_title', '.png', sep='')))
+      list(src = filename, height=382, width=700, alt="Figure 2")
+    }, deleteFile = FALSE)
   })
   
   observeEvent(input$S3, {
     toggle('image_S3')
     output$image_S3 <- renderImage({
-      filename <- normalizePath(file.path('./images',paste('FigureS3_title', '.png', sep='')))
+      filename <- normalizePath(file.path('./images',paste('FigureS3', '.png', sep='')))
       list(src = filename, height=382, width=700, alt="Figure 3")
     }, deleteFile = FALSE)
   })
   
   observeEvent(input$S3, {
     toggle('text_S3')
-    output$text_S3 <- renderText({paste("To address this using Shiny-SoSV, as demonstrated in Figure 3, the user can evaluate both “Sensitivity” and “Precision” across “Tumor coverage”. On the sidebar, the user can choose all SV callers and their union sets aiming to increase sensitivity and set tumour purity/VAF to 0.2, while fixing all other parameters as default.",
-                                    "<br>","From the evaluation plots, we can see a dramatic increase (from 50% to 80% by individual SV callers and from 55% to 85% by union call sets) on sensitivity when increasing tumor coverage, while precision level remains high >90%. Moving the slider bar from 30x (default) to 90x to increasing matched normal coverage has little improvement on sensitivity. Therefore, while >90% precision can easily be reached (regardless of SV caller, depth of sequencing coverage, or breakpoint precision threshold), it is far more difficult to attain sensitivity >85% with such low tumour purity (20%). If we are to extrapolate on the plot shown, it may be possible to attain > 90% sensitivity with > 120x coverage on the tumour.",
+    output$text_S3 <- renderText({paste("To address this using Shiny-SoSV, as demonstrated in the figure, the user can evaluate both “Sensitivity” and “Precision” across “Tumor coverage”. On the sidebar, the user can choose all SV callers and their union sets aiming to increase sensitivity and set tumour purity/VAF to 0.2, while fixing all other parameters as default.",
+                                    "<br>","From the evaluation plots, we can see a dramatic increase (from 50% to 80% by individual SV callers and from 55% to 85% by union call sets) on sensitivity when increasing tumor coverage, while precision level remains high >90%. Moving the slider bar from 30x (default) to 90x to increase matched normal coverage has little improvement on sensitivity. Therefore, while >90% precision can easily be reached (regardless of SV caller, depth of sequencing coverage, or breakpoint precision threshold), it is far more difficult to attain sensitivity >85% with such low tumour purity (20%). If we are to extrapolate on the plot shown, it may be possible to attain > 90% sensitivity with > 120x coverage on the tumour.",
                                     "</p>")})
   })
   
   observeEvent(input$S4, {
     toggle('image_S4')
     output$image_S4 <- renderImage({
-      filename <- normalizePath(file.path('./images',paste('FigureS4_title', '.png', sep='')))
+      filename <- normalizePath(file.path('./images',paste('FigureS4', '.png', sep='')))
       list(src = filename, height=382, width=700, alt="Figure 4")
     }, deleteFile = FALSE)
   })
   
   observeEvent(input$S4, {
     toggle('text_S4')
-    output$text_S4 <- renderText({paste("To address this using Shiny-SoSV, as demonstrated in Figure 4, the user would select to evaluate both “Sensitivity” and “Precision” across “Tumor coverage”. On the sidebar, the user can choose all SV callers (Manta, Lumpy and GRIDSS) for comparison in the first instance, setting tumor purity to 0.5 and fixing all other parameters as default. With these settings, Manta has the highest sensitivity, with 5% and 10% higher sensitivity than GRIDSS and Lumpy respectively. All SV callers can reach >90% precision. Considering the user’s preference to miss calls rather than make false calls, they may want to consider using two different SV callers and taking the intersection callset. Here, for example, the intersection callset from Manta and GRIDSS would increase the precision by around 3%, however, it is worth noting that sensitivity does drop. This drop in sensitivity can be compensated (something linearly) with deeper sequencing of the tumour sample. These plots should provide sufficient information for users to make educated decisions tailored for the situation.",
+    output$text_S4 <- renderText({paste("To address this using Shiny-SoSV, as demonstrated in the figure, the user would select to evaluate both “Sensitivity” and “Precision” across “Tumor coverage”. On the sidebar, the user can choose all SV callers (Manta, Lumpy and GRIDSS) for comparison in the first instance, setting tumor purity to 0.5 and fixing all other parameters as default. With these settings, Manta has the highest sensitivity, with 5% and 10% higher sensitivity than GRIDSS and Lumpy respectively. All SV callers can reach >90% precision. Considering the user’s preference to miss calls rather than make false calls, they may want to consider using two different SV callers and taking the intersection callset. Here, for example, the intersection callset from Manta and GRIDSS would increase the precision by around 3%, however, it is worth noting that sensitivity does drop. This drop in sensitivity can be compensated (something linearly) with deeper sequencing of the tumour sample. These plots should provide sufficient information for users to make educated decisions tailored for the situation.",
                                         "</p>")})
   })
   
