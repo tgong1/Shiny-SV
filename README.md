@@ -7,7 +7,7 @@ The app is hosted on Shinyapps.so: https://hcpcg.shinyapps.io/Shiny-SoSV/.
 
 To run this app locally on your machine, download R or RStudio and run the following commands once to set up the environment:
 ```
-install.packages(c(“shiny”, ”shinyjs”, ”ggplot2”, “gridExtra”, “ggsci”, "runGitHub"))
+install.packages(c(“shiny”, ”shinyjs”, ”ggplot2”, “gridExtra”, “ggsci”))
 ```
 You may now run the shiny app with command in R:
 ```
