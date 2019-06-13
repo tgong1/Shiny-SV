@@ -1,6 +1,8 @@
 # Shiny-SoSV
 
 Shiny-SoSV is an interactive web application for evaluating somatic structural variant calls derived from short-read whole genome sequencing. 
+If you use the Shiny-SoSV, please cite:
+Tingting Gong, Vanessa M Hayes, Eva KF Chan. Shiny-SoSV: A web app for interactive evaluation of somatic structural variant calls. BioRxiv 668723; doi: https://doi.org/10.1101/668723
 
 # Installation
 The app is hosted on Shinyapps.so: https://hcpcg.shinyapps.io/Shiny-SoSV/.
