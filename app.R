@@ -9,15 +9,20 @@ ui <- navbarPage(
   title='Shiny-SoSV!',id = "Shiny-SoSV",
 
   tabPanel(title = "Home", value = "introduction", 
-           h2("Shiny-SoSV: A web app for interactive evaluation of somatic structural variant calls", align = "center"),
-           h5("Shiny-SoSV is an interactive web app for evaluating somatic structural variant calls derived from short-read whole genome sequencing.", align = "center"),
+           h2("Shiny-SoSV:  An online power calculator for the detection of somatic structural variants from whole genome sequencing data", align = "center"),
+           h5("Shiny-SoSV provides an interactive and visual platform to explore the impact of different parameters on the power to detect somatic structural variants from short-read whole genome sequencing.", align = "center"),
            #h4("Shiny-SoSV can be access here"),
            #actionButton('jumpToEvaluation', 'Shiny-SoSV'),
            br(),
-           p("Somatic structural variants play a significant role in cancer development and evolution. Accurate detection of these complex variants from whole genome sequencing data is influenced by many variables, the effects of which are not always linear.",
-             "With increasing demand for the application of whole genome sequencing in clinical settings, clinical genomicists are required to make technical decisions at an ever faster pace. ", 
-             "To address this, we have developed Shiny-SoSV, an interactive web application for evaluating the effects of five common variables on the sensitivity and precision of somatic structural variant calls, thereby enabling users to quickly make informed sequencing and bioinformatics decisions early on in their study design."),
-           p("If you use this web app, please", em("cite it.")),
+           p("Structural variants play a significant role in cancer development and evolution. ",
+             "Common questions that arise when designing whole genome sequencing studies for the detection of somatic structural variants include; how much sequencing depth is needed, what level of tumour purity is required, and which detection tool should be used. ",
+             "However, answers to these questions are not straightforward as these variables are often inter-dependent. ",
+             "To address this, we have developed Shiny-SoSV, an online power calculator for determining the impact of common variables on the performance of somatic structural variant detection, including choice of structural variant caller, variant allele fraction, sequencing depth of coverage, and variant breakpoint resolution. ", 
+             "Using simulation studies, we first determined singular and combinatoric effects of these variables, then modelled the results using a generalised additive model, allowing sensitivity and specificity to be predicted for any combination of predictors. ",
+             "Shiny-SoSV provides an interactive and visual platform for users to easily explore the impact of different parameters on the power to detect somatic structural variants, thereby enabling them to rapidly address essential questions related to their study design. "),
+           p("If you use this web app, please cite:"),
+           p("Tingting Gong, Vanessa M Hayes, Eva KF Chan. Shiny-SoSV: A web app for interactive evaluation of somatic structural variant calls. BioRxiv 668723; doi:", 
+             a("https://doi.org/10.1101/668723", href="https://doi.org/10.1101/668723")),
            br(),
            actionButton('jumpToInstallation', 'Installation'),
            p("Detailed description of how to obtain and install your own copy of Shiny-SoSV."),
@@ -44,33 +49,22 @@ ui <- navbarPage(
   
   tabPanel(shinyjs::useShinyjs(),title = "Shiny-SoSV", value = "evaluation",#tweaks,
            sidebarLayout(fluid=FALSE,sidebarPanel(
-                                      checkboxGroupInput(inputId = "SVCaller3",
+                                     checkboxGroupInput(inputId = "SVCaller3",
                                                         label = ("SV Caller(s)"),
-                                                        choiceNames = list("Manta ", "Lumpy ", "GRIDSS "),
+                                                        choiceNames = list("Manta  ", "Lumpy ", "GRIDSS "),
                                                         choiceValues = c("Manta", "Lumpy", "GRIDSS"),
                                                         selected = "Manta",inline=TRUE,width='400px'),
-                                      checkboxGroupInput(inputId = "SVCaller3.1",
-                                                         label = NULL,
-                                                         choiceNames = list(HTML("&#8746;","Lumpy"),HTML("&#8746;","Manta"), HTML("&#8746;","Manta")),
-                                                         choiceValues = c("MantaLumpyUnion","LumpyMantaUnion","GRIDSSMantaUnion"),
-                                                         selected = NULL,inline=TRUE,width='400px'),
-                                      checkboxGroupInput(inputId = "SVCaller3.2",
-                                                         label = NULL,
-                                                         choiceNames = list(HTML("&#8745;","Lumpy"),HTML("&#8745;","Manta"),HTML("&#8745;","Manta")),
-                                                         choiceValues = c("MantaLumpyIntersect","LumpyMantaIntersect","GRIDSSMantaIntersect"),
-                                                         selected = NULL,inline=TRUE ,width='400px'),
-                                      checkboxGroupInput(inputId = "SVCaller3.3",
-                                                         label = NULL,
-                                                         choiceNames = list(HTML("&#8746;","GRIDSS"),HTML("&#8746;","GRIDSS"),HTML("&#8746;","Lumpy")),
-                                                         choiceValues = c("MantaGRIDSSUnion","LumpyGRIDSSUnion","GRIDSSLumpyUnion"),
-                                                         selected = NULL,inline=TRUE ,width='400px'),
-                                      checkboxGroupInput(inputId = "SVCaller3.4",
-                                                         label = NULL,
-                                                         choiceNames = list(HTML("&#8745;","GRIDSS"),HTML("&#8745;","GRIDSS"),HTML("&#8745;","Lumpy")),
-                                                         choiceValues = c("MantaGRIDSSIntersect","LumpyGRIDSSIntersect","GRIDSSLumpyIntersect"),
-                                                         selected = NULL,inline=TRUE ,width='400px'),
+                                     checkboxGroupInput(inputId = "SVCaller3.1",
+                                                        label = ("SV Callers Union"),
+                                                        choiceNames = list("Manta  ", "Lumpy ", "GRIDSS "),
+                                                        choiceValues = c("Manta", "Lumpy", "GRIDSS"),
+                                                        selected = c("Manta","Lumpy"),inline=TRUE,width='400px'),
+                                     checkboxGroupInput(inputId = "SVCaller3.2",
+                                                        label = ("SV Caller Intersection"),
+                                                        choiceNames = list("Manta  ", "Lumpy ", "GRIDSS "),
+                                                        choiceValues = c("Manta", "Lumpy", "GRIDSS"),
+                                                        selected = c("Manta","Lumpy"),inline=TRUE,width='400px'),
                                      
-                                      #controls,
                                      sliderInput("VAF3", "Tumor purity/VAF:",
                                                  min = 0.05, max = 1, value = 0.5, step= 0.01),
                                      checkboxGroupInput("VAF3.1",
@@ -98,7 +92,12 @@ ui <- navbarPage(
                                  choices = c("Tumor purity/VAF" = "VAF","Tumor coverage" = "T_coverage","Normal coverage" = "N_coverage","Breakpoint precision threshold" = "BND_threshold"),
                                  selected = "VAF",inline=TRUE),
                     textOutput("txtOutput3"),
-                    plotOutput("Plot3"),#downloadButton("report", "Generate report"),
+                    plotOutput("Plot3"),
+                    br(),
+                    br(),
+                    fluidRow(column(6,numericInput("objective3.1", label= "Your desired sensitivity", value = 0.7, min=0, max = 1, step = 0.1)),
+                             column(6,numericInput("objective3.2", label= "Your desired precision", value = 0.7, min=0, max = 1, step = 0.1))),
+                    fluidRow(column(6,tableOutput('table1')),column(6,tableOutput('table2'))),
                     width=9))
     ),
   tabPanel(title = "Installation", value = "installation",
@@ -111,6 +110,8 @@ ui <- navbarPage(
            br(),
            br(),
            p("Run the shiny app with command in R:"),
+           code("library(shiny)"),
+           br(),
            code("runGitHub('Shiny-SoSV', 'tgong1')"),
            br(),
            br(),
@@ -128,7 +129,7 @@ ui <- navbarPage(
   ),
   tabPanel(title = "User Guide", value = "userguide",
            h5("Shiny-SoSV provides predictions of the impact of common variables (SV caller, sequencing coverage, tumour allele frequencies, tolerance of breakpoint precision) on the sensitivity and precision of somatic SV calls through interactive plots."),
-           img(src = "UserGuide.png",height=509, width=1060),
+           img(src = "UserGuide.png",height=600, width=1060),
            #img(src = "UserGuide.png",height=764, width=1590),
            p(span("[1]"), "Evaluation measurement (s): Either or both performance measures (sensitivity and precision) can be evaluated. These values are shown on the y-axes, with 0 indicating poor performance and 1 for perfect performance. Confidence intervals of the predictions are shown by flanking grey bands."),
            h5("One of four predictors can be plotted on the x-axis using the “Evaluation across” radio button, including:"),
@@ -137,18 +138,22 @@ ui <- navbarPage(
            p("[4] “Normal coverage”: the depth of sequencing coverage of the normal sample."),
            p("[5] “Breakpoint precision threshold”: the precision of the breakpoint calls in nucleotide units."),
            h5("Additional predictor variables can be examined and visualised using the sidebar. In general, checkboxes allow additional prediction lines to be added/removed from the plots, while slider bars allow different values of the corresponding variable to be altered in the prediction. In particular:"),
-           p("[6] SV Caller(s): One or more, and combinations of, SV callers can be examined (distinguished by line colour in the plots).", 
-             "Combination of SV callers can be examined as “Union” or “Interaction” sets, where A∪B sets are SV calls identified by either caller A or caller B, while A∩B sets are SV calls identified by BOTH A and B."),
-           p("[7] Tumour purity/VAF: Up to three values of this predictor can be visualised on the plots (distinguished by line type on the plots) evaluating across “Tumour coverage” [3].", 
+           p("[6] SV Caller(s): One or more SV callers can be examined (distinguished by line colour in the plots)."),
+           p("[7] SV Callers Union: Union set of SV callers can be examined (distinguished by line colour in the plots). Union sets (A∪B sets) are SV calls identified by either caller A or caller B."),
+           p("[8] SV Callers Intersection: Intersection set of SV callers can be examined (distinguished by line colour in the plots). Interaction sets (A∩B sets) are SV calls identified by BOTH A and B."),
+           p("[9] Tumour purity/VAF: Up to three values of this predictor can be visualised on the plots (distinguished by line type on the plots) evaluating across “Tumour coverage” [3].", 
              "Two of the values are preset to 0.2 and 0.8 (as checkboxes) and the third can be any value between 0.05 and 0.95 (adjustable via the sliderbar).",
              "When evaluating across “Normal coverage” [4] or “Breakpoint precision threshold” [5], only one VAF values can be elected, and this can be done via the sliderbar.",
              "When evaluating across “Tumour purity/VAF” [2], this option is disabled (greyed out)."),
-           p("[8] Tumour Coverage: When evaluating across “Tumour purity/VAF” [2], “Normal coverage” [4] or “Breakpoint precision threshold” [5], three Tumour Coverage values can be examined simultaneously, including two preset values of 30x and 60x and a third definable by the user via the slider bar.", 
+           p("[10] Tumour Coverage: When evaluating across “Tumour purity/VAF” [2], “Normal coverage” [4] or “Breakpoint precision threshold” [5], three Tumour Coverage values can be examined simultaneously, including two preset values of 30x and 60x and a third definable by the user via the slider bar.", 
              "When evaluating across“Tumour Coverage” [3], this option is disabled (greyed out)."),
-           p("[9] Normal Coverage: Only one value can be evaluated at any one time.", 
+           p("[11] Normal Coverage: Only one value can be evaluated at any one time.", 
              "When evaluating across “Normal Coverage” [4], this option is disabled."),
-           p("[10] Breakpoint Precision: Only one value can be evaluated at any one time.",
+           p("[12] Breakpoint Precision: Only one value can be evaluated at any one time.",
              "When evaluating across “Breakpoint Precision” [4], this option is disabled."),
+           h5("To visualize your desired sensitivity and precision line on the plot and make decisions on variables based on the objective:"),
+           p("[13] Enter your desired sensitivity and precision."),
+           p("[14] Tables show the lower bound of variables to achieve desired sensitivity and precision."),
            tags$hr(),
            strong("A note on the parameters:"),
            tags$ul(
@@ -236,9 +241,11 @@ server <- function(input, output, session)({
     toggle('text_S1')
     #output$text_S1 <- renderText({"ahh you pressed it"})
     output$text_S1 <- renderText({paste("To address this using Shiny-SoSV, as demonstrated in the figure, the user would evaluate “Sensitivity” and “Precision” across “Tumor purity/VAF”. On the sidebar, choose any (combination of) SV caller(s), including Lumpy (the implemented caller in this scenario). Here, Lumpy, GRIDSS and the union set of them have been selected. Three tumor coverages have also been selected for comparison: presets 30x and 60x selected via the checkboxes and 90x via slider bar. All other parameters are left as default.",
-                                    "<br>","From this, it should be immediately obvious that tumor purity has a great impact on sensitivity, while little impact on precision, particularly for tumour purity within 5% and 30%. In addition, the union set of Lumpy and GRIDSS has the highest sensitivity across all tumour purity, but slightly lower precision.", 
-                                   "Considering the objective (sensitivity > 80% and precision > 90%), the user could choose to keep Lumpy in their pipeline and consider excluding all samples with tumor purity < 30%, allowing them to use any extra funds to sequence the remaining tumor samples to 90x depth of coverage. Alternatively, the user could include GRIDSS into the pipeline, sequencing at 60x, and including all samples.",
-                                   "</p>")})
+                                        "<br>",
+                                        "From this, it should be immediately obvious that tumor purity has a great impact on sensitivity, while little impact on precision, particularly for tumour purity within 5% and 30%. In addition, the union set of Lumpy and GRIDSS has the highest sensitivity across all tumour purity, but slightly lower precision. ",
+                                        "<br>",
+                                        "Entering the objectives (sensitivity > 80% and precision > 90%), the table shows that Lumpy can achieve 80% sensitivity with at least 33% tumour purity and tumour sequencing coverage at 90x. While, at 60x, the union set of Lumpy and GRIDSS can achieve > 80% sensitivity when tumour purity >30%. Therefore, the user could choose to keep Lumpy in their pipeline and consider excluding all samples with tumor purity < 33%, allowing them to use any extra funds to sequence the remaining tumor samples to 90x depth of coverage. Alternatively, the user could include GRIDSS into the pipeline, sequencing at 60x, and including all samples. ",
+                                        "</p>")})
     })
   
   observeEvent(input$S2, {
@@ -251,14 +258,14 @@ server <- function(input, output, session)({
   
   observeEvent(input$S2, {
     toggle('text_S2')
-    output$text_S2 <- renderText({paste("There are several ways to address this. As we don’t know the expected tumour purity of these samples, we could evaluate across “Tumour Purity/VAF”, fixing Tumour coverage at 60x and Normal coverage at the lowest option of 15x, as shown in Figure 2a. Selecting all three SV callers show that it is possible to achieve sensitivity above 80% with manta but only if the tumour sample is at least 40% pure. Further selecting the union set of Manta &GRIDSS (the two best performing callers under this setting) suggests we might be able to reach > 80% sensitivity with tumour purity as low as 25%.",
+    output$text_S2 <- renderText({paste("There are several ways to address this. As we don’t know the expected tumour purity of these samples, we could evaluate across “Tumour Purity/VAF”, fixing Tumour coverage at 60x and Normal coverage at the lowest option of 15x. Entering the desired sensitivity and precision, for example at least 80% sensitivity and precision, as shown in Figure 2a. Selecting all three SV callers shows that it is possible to achieve sensitivity above 80% with Manta but only if the tumour sample is at least 43% pure. Further selecting the union set of Manta  and GRIDSS (the two best performing callers under this setting) suggests we might be able to reach > 80% sensitivity with tumour purity as low as 25%.",
                                         "</p>")})
   })
   
   observeEvent(input$S2, {
     toggle('text_S2.1')
     output$text_S2.1 <- renderText({paste("Another way to address this question would be to evaluate across “Normal coverage” and setting Tumour coverage to 60x. Again, as we don’t know the purity of the tumour samples, we may need to explore a bit. For example, setting Tumour purity to 50% shown in Figure 2b, we see that the depth of coverage of the normal sample does not actually have very significant impact on the sensitivity or precision. Rather, it is the SV callers that have the biggest impact. Again, we see sensitivity exceeds 80% with Manta alone, providing tumour purity is > 50%. Lowering Tumour purity to 25% shown in Figure 2c, we note the need to use a combination of SV callers in order to achieve the desire sensitivity.",
-                                        "</p>")})
+                                          "</p>")})
   })
   
   observeEvent(input$S2, {
@@ -287,9 +294,12 @@ server <- function(input, output, session)({
   
   observeEvent(input$S3, {
     toggle('text_S3')
-    output$text_S3 <- renderText({paste("To address this using Shiny-SoSV, as demonstrated in the figure, the user can evaluate both “Sensitivity” and “Precision” across “Tumor coverage”. On the sidebar, the user can choose all SV callers and their union sets aiming to increase sensitivity and set tumour purity/VAF to 0.2, while fixing all other parameters as default.",
-                                    "<br>","From the evaluation plots, we can see a dramatic increase (from 50% to 80% by individual SV callers and from 55% to 85% by union call sets) on sensitivity when increasing tumor coverage, while precision level remains high >90%. Moving the slider bar from 30x (default) to 90x to increase matched normal coverage has little improvement on sensitivity. Therefore, while >90% precision can easily be reached (regardless of SV caller, depth of sequencing coverage, or breakpoint precision threshold), it is far more difficult to attain sensitivity >85% with such low tumour purity (20%). If we are to extrapolate on the plot shown, it may be possible to attain > 90% sensitivity with > 120x coverage on the tumour.",
-                                    "</p>")})
+    output$text_S3 <- renderText({paste("To address this using Shiny-SoSV, as demonstrated in Figure, the user can evaluate both “Sensitivity” and “Precision” across “Tumor coverage”. On the sidebar, the user can choose all SV callers and their union sets aiming to increase sensitivity and set tumour purity/VAF to 0.2, while fixing all other parameters as default. ",
+                                        "<br>",
+                                        "From the evaluation plots, we can see a dramatic increase (from 50% to 80% by individual SV callers and from 55% to 85% by union call sets) on sensitivity when increasing tumour coverage, while precision level remains high >90%. Moving the slider bar from 30x (default) to 90x to increase matched normal coverage has little improvement on sensitivity. ",
+                                        "<br>",
+                                        "To explore how much to sequence and which SV caller to choose, user can enter the desired sensitivity and precision (90%). From the plots and tables, we can see that it is far more difficult to attain sensitivity >85% with such low tumour purity (20%), while >90% precision can easily be reached (regardless of SV caller, depth of sequencing coverage, or breakpoint precision threshold). If we are to extrapolate on the plot shown, it may be possible to attain > 90% sensitivity with > 120x coverage on the tumour.",
+                                        "</p>")})
   })
   
   observeEvent(input$S4, {
@@ -302,8 +312,12 @@ server <- function(input, output, session)({
   
   observeEvent(input$S4, {
     toggle('text_S4')
-    output$text_S4 <- renderText({paste("To address this using Shiny-SoSV, as demonstrated in the figure, the user would select to evaluate both “Sensitivity” and “Precision” across “Tumor coverage”. On the sidebar, the user can choose all SV callers (Manta, Lumpy and GRIDSS) for comparison in the first instance, setting tumor purity to 0.5 and fixing all other parameters as default. With these settings, Manta has the highest sensitivity, with 5% and 10% higher sensitivity than GRIDSS and Lumpy respectively. All SV callers can reach >90% precision. Considering the user’s preference to miss calls rather than make false calls, they may want to consider using two different SV callers and taking the intersection callset. Here, for example, the intersection callset from Manta and GRIDSS would increase the precision by around 3%, however, it is worth noting that sensitivity does drop. This drop in sensitivity can be compensated (something linearly) with deeper sequencing of the tumour sample. These plots should provide sufficient information for users to make educated decisions tailored for the situation.",
-                                        "</p>")})
+    output$text_S4 <- renderText({paste("To address this using Shiny-SoSV, as demonstrated in Figure, the user would select to evaluate both “Sensitivity” and “Precision” across “Tumor coverage”. On the sidebar, the user can choose all SV callers (Manta, Lumpy and GRIDSS) for comparison in the first instance, setting tumor purity to 0.5 and fixing all other parameters as default. " ,
+                                         "<br>",
+                                         "With these settings, Manta has the highest sensitivity, with 5% and 10% higher sensitivity than GRIDSS and Lumpy respectively. All SV callers can reach >90% precision. Considering the user’s preference to miss calls rather than make false calls, they may want to consider using two different SV callers and taking the intersection callset. From the table, the intersection callset from any two SV callers would increase the precision by around 3%, however, it is worth noting that sensitivity does drop.  To explore how much more sequencing is needed to compensate the drop in sensitivity, user can view the lower bound of variables required for the desired sensitivity. If the desired sensitivity is 80%, as shown in table, using the intersection set of Manta and GRIDSS would need another 34x depth of sequencing coverage on tumour, comparing to using Manta only.",
+                                         "<br>",
+                                        "Therefore, the plots and table provide sufficient information for users to make educated decisions tailored for the situation. ",
+                                         "</p>")})
   })
   
   
@@ -350,6 +364,11 @@ server <- function(input, output, session)({
     disable("BND_threshold3")
   }})
   
+  observe({if(!MeasureInput3()[1]){ disable("objective3.1") }})
+  observe({if(MeasureInput3()[1]){ enable("objective3.1") }}) 
+  observe({if(!MeasureInput3()[2]){ disable("objective3.2") }})
+  observe({if(MeasureInput3()[2]){ enable("objective3.2") }})
+  
   dataInput3 <- reactive({
     if(input$X_axis3 == "VAF"){
       T_coverage_label = paste0(c(input$T_coverage3,60,30),"x")
@@ -361,15 +380,15 @@ server <- function(input, output, session)({
                             N_coverage = input$N_coverage3,
                             VAF = rep(seq(0.05,1,0.01),each=length(T_coverage_label)*length(SV_caller[1:3])),
                             BND_threshold = input$BND_threshold3)
-      newdataUnion <- data.frame(Caller = SV_caller[c(4,6,8,10,12,14)],
-                                 T_coverage = rep(c(input$T_coverage3,60,30), each=length(SV_caller[c(4,6,8,10,12,14)])),
+      newdataUnion <- data.frame(Caller = SV_caller[c(4,5,8,9,12,13)],
+                                 T_coverage = rep(c(input$T_coverage3,60,30), each=length(SV_caller[c(4,5,8,9,12,13)])),
                                  N_coverage = input$N_coverage3,
-                                 VAF = rep(seq(0.05,1,0.01),each=length(T_coverage_label)*length(SV_caller[c(4,6,8,10,12,14)])),
+                                 VAF = rep(seq(0.05,1,0.01),each=length(T_coverage_label)*length(SV_caller[c(4,5,8,9,12,13)])),
                                  BND_threshold = input$BND_threshold3)
-      newdataIntersect <- data.frame(Caller = SV_caller[c(5,7,9,11,13,15)],
-                                     T_coverage = rep(c(input$T_coverage3,60,30), each=length(SV_caller[c(5,7,9,11,13,15)])),
+      newdataIntersect <- data.frame(Caller = SV_caller[c(6,7,10,11,14,15)],
+                                     T_coverage = rep(c(input$T_coverage3,60,30), each=length(SV_caller[c(6,7,10,11,14,15)])),
                                      N_coverage = input$N_coverage3,
-                                     VAF = rep(seq(0.05,1,0.01),each=length(T_coverage_label)*length(SV_caller[c(5,7,9,11,13,15)])),
+                                     VAF = rep(seq(0.05,1,0.01),each=length(T_coverage_label)*length(SV_caller[c(6,7,10,11,14,15)])),
                                      BND_threshold = input$BND_threshold3)
       
       xlabel <- "Tumor purity/VAF"
@@ -392,15 +411,15 @@ server <- function(input, output, session)({
                             N_coverage = input$N_coverage3,
                             VAF = rep(c(input$VAF3,0.2,0.8), each=length(SV_caller[1:3])),
                             BND_threshold = input$BND_threshold3)
-      newdataUnion <- data.frame(Caller = SV_caller[c(4,6,8,10,12,14)],
-                                 T_coverage = rep(c(20:90),each = length(VAF_label)*length(SV_caller[c(4,6,8,10,12,14)])),
+      newdataUnion <- data.frame(Caller = SV_caller[c(4,5,8,9,12,13)],
+                                 T_coverage = rep(c(20:90),each = length(VAF_label)*length(SV_caller[c(4,5,8,9,12,13)])),
                                  N_coverage = input$N_coverage3,
-                                 VAF = rep(c(input$VAF3,0.2,0.8), each=length(SV_caller[c(4,6,8,10,12,14)])),
+                                 VAF = rep(c(input$VAF3,0.2,0.8), each=length(SV_caller[c(4,5,8,9,12,13)])),
                                  BND_threshold = input$BND_threshold3)
-      newdataIntersect <- data.frame(Caller = SV_caller[c(5,7,9,11,13,15)],
-                                     T_coverage = rep(c(20:90),each = length(VAF_label)*length(SV_caller[c(5,7,9,11,13,15)])),
+      newdataIntersect <- data.frame(Caller = SV_caller[c(6,7,10,11,14,15)],
+                                     T_coverage = rep(c(20:90),each = length(VAF_label)*length(SV_caller[c(6,7,10,11,14,15)])),
                                      N_coverage = input$N_coverage3,
-                                     VAF = rep(c(input$VAF3,0.2,0.8), each=length(SV_caller[c(5,7,9,11,13,15)])),
+                                     VAF = rep(c(input$VAF3,0.2,0.8), each=length(SV_caller[c(6,7,10,11,14,15)])),
                                      BND_threshold = input$BND_threshold3)
       
       xlabel <- "Tumor coverage (x)"
@@ -423,14 +442,14 @@ server <- function(input, output, session)({
                             N_coverage = rep(c(15:90), each = length(T_coverage_label)*length(SV_caller[1:3])),
                             VAF = input$VAF3,
                             BND_threshold = input$BND_threshold3)
-      newdataUnion <- data.frame(Caller = SV_caller[c(4,6,8,10,12,14)],
-                                 T_coverage = rep(c(input$T_coverage3,60,30), each=length(SV_caller[c(4,6,8,10,12,14)])),
-                                 N_coverage = rep(c(15:90), each = length(T_coverage_label)*length(SV_caller[c(4,6,8,10,12,14)])),
+      newdataUnion <- data.frame(Caller = SV_caller[c(4,5,8,9,12,13)],
+                                 T_coverage = rep(c(input$T_coverage3,60,30), each=length(SV_caller[c(4,5,8,9,12,13)])),
+                                 N_coverage = rep(c(15:90), each = length(T_coverage_label)*length(SV_caller[c(4,5,8,9,12,13)])),
                                  VAF = input$VAF3,
                                  BND_threshold = input$BND_threshold3)
-      newdataIntersect <- data.frame(Caller = SV_caller[c(5,7,9,11,13,15)],
-                                     T_coverage = rep(c(input$T_coverage3,60,30), each=length(SV_caller[c(5,7,9,11,13,15)])),
-                                     N_coverage = rep(c(15:90), each = length(T_coverage_label)*length(SV_caller[c(5,7,9,11,13,15)])),
+      newdataIntersect <- data.frame(Caller = SV_caller[c(6,7,10,11,14,15)],
+                                     T_coverage = rep(c(input$T_coverage3,60,30), each=length(SV_caller[c(6,7,10,11,14,15)])),
+                                     N_coverage = rep(c(15:90), each = length(T_coverage_label)*length(SV_caller[c(6,7,10,11,14,15)])),
                                      VAF = input$VAF3,
                                      BND_threshold = input$BND_threshold3)
       xlabel <- "Normal coverage (x)"
@@ -453,16 +472,16 @@ server <- function(input, output, session)({
                             N_coverage = input$N_coverage3,
                             VAF = input$VAF3,
                             BND_threshold = rep(c(2:200), each = length(T_coverage_label)*length(SV_caller[1:3])))
-      newdataUnion <- data.frame(Caller = SV_caller[c(4,6,8,10,12,14)],
-                                 T_coverage = rep(c(input$T_coverage3,60,30), each=length(SV_caller[c(4,6,8,10,12,14)])),
+      newdataUnion <- data.frame(Caller = SV_caller[c(4,5,8,9,12,13)],
+                                 T_coverage = rep(c(input$T_coverage3,60,30), each=length(SV_caller[c(4,5,8,9,12,13)])),
                                  N_coverage = input$N_coverage3,
                                  VAF = input$VAF3,
-                                 BND_threshold = rep(c(2:200), each = length(T_coverage_label)*length(SV_caller[c(4,6,8,10,12,14)])))
-      newdataIntersect <- data.frame(Caller = SV_caller[c(5,7,9,11,13,15)],
-                                     T_coverage = rep(c(input$T_coverage3,60,30), each=length(SV_caller[c(5,7,9,11,13,15)])),
+                                 BND_threshold = rep(c(2:200), each = length(T_coverage_label)*length(SV_caller[c(4,5,8,9,12,13)])))
+      newdataIntersect <- data.frame(Caller = SV_caller[c(6,7,10,11,14,15)],
+                                     T_coverage = rep(c(input$T_coverage3,60,30), each=length(SV_caller[c(6,7,10,11,14,15)])),
                                      N_coverage = input$N_coverage3,
                                      VAF = input$VAF3,
-                                     BND_threshold = rep(c(2:200), each = length(T_coverage_label)*length(SV_caller[c(5,7,9,11,13,15)])))
+                                     BND_threshold = rep(c(2:200), each = length(T_coverage_label)*length(SV_caller[c(6,7,10,11,14,15)])))
       xlabel <- "Breakpoint precision threshold (bp)"
       Tcov_var <- c(paste0(input$T_coverage3,"x"),input$T_coverage3.1)
       Ncov_var <- paste0(input$N_coverage3,"x")
@@ -526,15 +545,130 @@ server <- function(input, output, session)({
     df.Sensitivity <- rbind(df.Sensitivity_caller, df.Sensitivity_Union, df.Sensitivity_Intersect)
     df.Precision <- rbind(df.Precision_caller, df.Precision_Union, df.Precision_Intersect)
     
+   #### add line to sensitivity 
+    tmp1 <- df.Sensitivity
+    obj_row <- c()
+    if(input$X_axis3 %in% c("VAF","N_coverage","BND_threshold")){
+      for(i in 1: length(SV_caller)){
+        for(j in 1: length(T_coverage_label)){
+          tmp = tmp1[(tmp1$Caller %in% SV_caller[i]) &
+                       (tmp1$T_coverage_label %in% T_coverage_label[j]) &
+                       (tmp1$N_coverage_label %in% Ncov_var) &
+                       (tmp1$VAF_label %in% VAF_var) &
+                       (tmp1$BND_threshold %in% BND_var),]
+          obj_row <- c(obj_row,rownames(tmp[tmp$fit>input$objective3.1,][1,]))
+        }
+      }
+    }else if(input$X_axis3 == "T_coverage"){
+      for(i in 1: length(SV_caller)){
+        for(k in 1: length(VAF_label)){
+          tmp = tmp1[(tmp1$Caller %in% SV_caller[i]) &
+                       (tmp1$T_coverage_label %in% Tcov_var) &
+                       (tmp1$N_coverage_label %in% Ncov_var) &
+                       (tmp1$VAF_label %in% VAF_label[k]) &
+                       (tmp1$BND_threshold %in% BND_var),]
+          obj_row <- c(obj_row,rownames(tmp[tmp$fit>input$objective3.1,][1,]))
+        }
+      }
+    }
+    obj <- rep(FALSE,nrow(df.Sensitivity))
+    obj[as.numeric(obj_row[obj_row!="NA"])] <- TRUE
+    df.Sensitivity <- cbind(df.Sensitivity,obj)
+    
+    obj.y <- rep(NA,nrow(df.Sensitivity))
+    obj.y[df.Sensitivity$obj] <- df.Sensitivity$fit[df.Sensitivity$obj]
+    df.Sensitivity <- cbind(df.Sensitivity,obj.y)
+    
+    #### add line to precision 
+    tmp1 <- df.Precision
+    obj_row <- c()
+    if(input$X_axis3 %in% c("VAF","N_coverage","BND_threshold")){
+      for(i in 1: length(SV_caller)){
+        for(j in 1: length(T_coverage_label)){
+          tmp = tmp1[(tmp1$Caller %in% SV_caller[i]) &
+                       (tmp1$T_coverage_label %in% T_coverage_label[j]) &
+                       (tmp1$N_coverage_label %in% Ncov_var) &
+                       (tmp1$VAF_label %in% VAF_var) &
+                       (tmp1$BND_threshold %in% BND_var),]
+          obj_row <- c(obj_row,rownames(tmp[tmp$fit>input$objective3.2,][1,]))
+        }
+      }
+    }else if(input$X_axis3 == "T_coverage"){
+      for(i in 1: length(SV_caller)){
+        for(k in 1: length(unique(VAF_label))){
+          tmp = tmp1[(tmp1$Caller %in% SV_caller[i]) &
+                       (tmp1$T_coverage_label %in% Tcov_var) &
+                       (tmp1$N_coverage_label %in% Ncov_var) &
+                       (tmp1$VAF_label %in% unique(VAF_label)[k]) &
+                       (tmp1$BND_threshold %in% BND_var),]
+          obj_row <- c(obj_row,rownames(tmp[tmp$fit>input$objective3.2,][1,]))
+        }
+      }
+    }
+    
+    obj <- rep(FALSE,nrow(df.Precision))
+    obj[as.numeric(obj_row[obj_row!="NA"])] <- TRUE
+    df.Precision <- cbind(df.Precision,obj)
+    
+    obj.y <- rep(NA,nrow(df.Precision))
+    obj.y[df.Precision$obj] <- df.Precision$fit[df.Precision$obj]
+    df.Precision <- cbind(df.Precision,obj.y)
+    
     df.Sensitivity$Caller <- factor(df.Sensitivity$Caller, levels = SV_caller)
     df.Precision$Caller <- factor(df.Precision$Caller, levels = SV_caller)
     
-    return(list(df.Sensitivity,df.Precision,
-                xlabel,line_type,Tcov_var,Ncov_var,VAF_var,BND_var,index,legend_label,x_min,x_max,x_by))
+    
+    input_union <- c()
+    if(length(input$SVCaller3.1)==1){
+      input_union <- input$SVCaller3.1
+    }else{
+      for(i in 1: length(input$SVCaller3.1)){
+        for(j in 1: length(input$SVCaller3.1)){
+          if(j!=i){
+            input_union <- c(input_union,paste0(input$SVCaller3.1[i],input$SVCaller3.1[j],"Union"))
+          }
+        }
+      }
+    }
+    
+    input_intersect <- c()
+    if(length(input$SVCaller3.2)==1){
+      input_intersect <- input$SVCaller3.2
+    }else{
+      for(i in 1: length(input$SVCaller3.2)){
+        for(j in 1: length(input$SVCaller3.2)){
+          if(j!=i){
+            input_intersect <- c(input_intersect,paste0(input$SVCaller3.2[i],input$SVCaller3.2[j],"Intersect"))
+          }
+        }
+      }
+    }
+    
+    df1 = df.Sensitivity[(df.Sensitivity$Caller %in% c(input$SVCaller3,input_union,input_intersect)) & 
+                          (df.Sensitivity$T_coverage_label %in% Tcov_var) &
+                          (df.Sensitivity$N_coverage_label %in% Ncov_var) &
+                          (df.Sensitivity$VAF_label %in% VAF_var) &
+                          (df.Sensitivity$BND_label %in% BND_var),]
+    
+    tmp <- cbind(df1,SV_caller_label1[match(df1$Caller,SV_caller)])
+    table1 <- cbind(tmp[tmp$obj,c(ncol(tmp),2:6)])
+    colnames(table1) <- c("SV caller","Tumor coverage","Normal coverage","Tumor purity/VAF","Breakpoint precision threshold","Sensitivity")
+
+    df2 = df.Precision[(df.Precision$Caller %in% c(input$SVCaller3,input_union,input_intersect)) & 
+                        (df.Precision$T_coverage_label %in% Tcov_var) &
+                        (df.Precision$N_coverage_label %in% Ncov_var) &
+                        (df.Precision$VAF_label %in% VAF_var)&
+                        (df.Precision$BND_label %in% BND_var),]
+    
+    tmp <- cbind(df2,SV_caller_label1[match(df2$Caller,SV_caller)])
+    table2 <- cbind(tmp[tmp$obj,c(ncol(tmp),2:6)])
+    colnames(table2) <- c("SV caller","Tumor coverage","Normal coverage","Tumor purity/VAF","Breakpoint precision threshold","Precision")
+    
+    return(list(xlabel,line_type,index,legend_label,x_min,x_max,x_by,df.Sensitivity,df.Precision,df1,df2,table1,table2))
   })
   
   #output$txtOutput3 <- renderText({
-  #  paste("Show the",#c(input$SVCaller3,input$SVCaller3.1,input$SVCaller3.2,input$SVCaller3.3,input$SVCaller3.4),
+   # paste("Show the",#c(input$SVCaller3,input$SVCaller3.1,input$SVCaller3.2,input$SVCaller3.3,input$SVCaller3.4),
         #df$SV_caller_label
    #       input$measurements3,MeasureInput3()#[1],MeasureInput3()[2]
     #      "of",input$SVCaller3
@@ -548,34 +682,33 @@ server <- function(input, output, session)({
           #paste(input$T_coverage3.1,collapse = ","),
           #paste(colnames(dataInput3()[[1]]),collapse = ",")
           #dataInput3()[[4]]
-          #head(dataInput3()[[1]])
+          #head(dataInput3()[[14]])
     #)
   #})
   
+  output$table1 <- renderTable(if(!MeasureInput3()[1]){NULL}else{dataInput3()[[12]]}, sanitize.text.function=identity, digits = 2)
+  output$table2 <- renderTable(if(!MeasureInput3()[2]){NULL}else{dataInput3()[[13]]}, sanitize.text.function=identity)
+  
+  
   Sensitivity_plot3 <- reactive({
     if(!MeasureInput3()[1]) return(NULL)
-    Tcov_var <- dataInput3()[[5]]
-    Ncov_var <- dataInput3()[[6]]
-    VAF_var <- dataInput3()[[7]]
-    BND_var <- dataInput3()[[8]]
-    index <- dataInput3()[[9]]
-    xlabel <- dataInput3()[[3]]
-    line_type <- dataInput3()[[4]]
-    legend_label <- dataInput3()[[10]]
-    x_min <- dataInput3()[[11]]
-    x_max <- dataInput3()[[12]]
-    x_by <- dataInput3()[[13]]
+    xlabel <- dataInput3()[[1]]
+    line_type <- dataInput3()[[2]]
+    index <- dataInput3()[[3]]
+    legend_label <- dataInput3()[[4]]
+    x_min <- dataInput3()[[5]]
+    x_max <- dataInput3()[[6]]
+    x_by <- dataInput3()[[7]]
+    #df.Sensitivity <- dataInput3()[[8]]
+    df <- dataInput3()[[10]]
     
-    df = dataInput3()[[1]][(dataInput3()[[1]]$Caller %in% c(input$SVCaller3,input$SVCaller3.1,input$SVCaller3.2,input$SVCaller3.3,input$SVCaller3.4)) & 
-                             (dataInput3()[[1]]$T_coverage_label %in% Tcov_var) &
-                             (dataInput3()[[1]]$N_coverage_label %in% Ncov_var) &
-                             (dataInput3()[[1]]$VAF_label %in% VAF_var) &
-                             (dataInput3()[[1]]$BND_label %in% BND_var),]
     ggplot(data = df, aes(x = eval(parse(text = input$X_axis3)), y = fit, group = interaction(Caller,eval(parse(text = colnames(df)[index]))))) +
       geom_ribbon(aes(ymin = fit-1.96*se.fit, ymax = fit+1.96*se.fit), fill = "grey70")+
       geom_line(data = df, aes(x = eval(parse(text = input$X_axis3)), y = fit,
                                group = interaction(Caller,eval(parse(text = colnames(df)[index]))), 
                                color = Caller, linetype = eval(parse(text = colnames(df)[index]))))+
+      geom_hline(yintercept=input$objective3.1)+
+      geom_point(data=df,aes(x=eval(parse(text = input$X_axis3)), y = obj.y))+ 
       ggtitle(paste("Sensitivity", "across", xlabel))+
       scale_y_continuous(breaks = seq(0, 1, by = 0.1), limits = c(0,1))+
       scale_x_continuous(breaks = seq(x_min, x_max, by = x_by), limits = c(x_min,x_max))+
@@ -589,28 +722,23 @@ server <- function(input, output, session)({
   
   Precision_plot3 <- reactive({
     if(!MeasureInput3()[2]) return(NULL)
-    Tcov_var <- dataInput3()[[5]]
-    Ncov_var <- dataInput3()[[6]]
-    VAF_var <- dataInput3()[[7]]
-    BND_var <- dataInput3()[[8]]
-    index <- dataInput3()[[9]]
-    xlabel <- dataInput3()[[3]]
-    line_type <- dataInput3()[[4]]
-    df.Precision <- dataInput3()[[2]]
-    legend_label <- dataInput3()[[10]]
-    x_min <- dataInput3()[[11]]
-    x_max <- dataInput3()[[12]]
-    x_by <- dataInput3()[[13]]
-    df = df.Precision[(df.Precision$Caller %in% c(input$SVCaller3,input$SVCaller3.1,input$SVCaller3.2,input$SVCaller3.3,input$SVCaller3.4)) & 
-                        (df.Precision$T_coverage_label %in% Tcov_var) &
-                        (df.Precision$N_coverage_label %in% Ncov_var) &
-                        (df.Precision$VAF_label %in% VAF_var)&
-                        (df.Precision$BND_label %in% BND_var),]
+    xlabel <- dataInput3()[[1]]
+    line_type <- dataInput3()[[2]]
+    index <- dataInput3()[[3]]
+    legend_label <- dataInput3()[[4]]
+    x_min <- dataInput3()[[5]]
+    x_max <- dataInput3()[[6]]
+    x_by <- dataInput3()[[7]]
+    #df.Precision <- dataInput3()[[9]]
+    df <- dataInput3()[[11]]
+
     ggplot(data = df, aes(x = eval(parse(text = input$X_axis3)), y = fit, group = interaction(Caller,eval(parse(text = colnames(df)[index]))))) +
       geom_ribbon(aes(ymin = fit-1.96*se.fit, ymax = fit+1.96*se.fit), fill = "grey70")+
       geom_line(data = df, aes(x = eval(parse(text = input$X_axis3)), y = fit,
                                group = interaction(Caller,eval(parse(text = colnames(df)[index]))), 
                                color = Caller, linetype = eval(parse(text = colnames(df)[index]))))+
+      geom_hline(yintercept=input$objective3.2)+
+      geom_point(data=df,aes(x=eval(parse(text = input$X_axis3)), y = obj.y))+ 
       ggtitle(paste("Precision", "across", xlabel))+
       scale_y_continuous(breaks = seq(0, 1, by = 0.1), limits = c(0,1))+
       scale_x_continuous(breaks = seq(x_min, x_max, by = x_by), limits = c(x_min,x_max))+
