@@ -11,8 +11,6 @@ ui <- navbarPage(
   tabPanel(title = "Home", value = "introduction", 
            h2("Shiny-SoSV:  An online power calculator for the detection of somatic structural variants from whole genome sequencing data", align = "center"),
            h5("Shiny-SoSV provides an interactive and visual platform to explore the impact of different parameters on the power to detect somatic structural variants from short-read whole genome sequencing.", align = "center"),
-           #h4("Shiny-SoSV can be access here"),
-           #actionButton('jumpToEvaluation', 'Shiny-SoSV'),
            br(),
            p("Structural variants play a significant role in cancer development and evolution. ",
              "Common questions that arise when designing whole genome sequencing studies for the detection of somatic structural variants include; how much sequencing depth is needed, what level of tumour purity is required, and which detection tool should be used. ",
@@ -24,7 +22,12 @@ ui <- navbarPage(
            p("Tingting Gong, Vanessa M Hayes, Eva KF Chan. Shiny-SoSV: A web app for interactive evaluation of somatic structural variant calls. BioRxiv 668723; doi:", 
              a("https://doi.org/10.1101/668723", href="https://doi.org/10.1101/668723")),
            br(),
-           actionButton('jumpToInstallation', 'Installation'),
+           #h4("Shiny-SoSV can be access here"),
+           fluidRow(column(10,offset=5,actionButton('jumpToEvaluation', 'Launch Shiny-SoSV'))),
+           br(),
+           br(),
+           br(),
+           actionButton('jumpToInstallation', 'GitHub'),
            p("Detailed description of how to obtain and install your own copy of Shiny-SoSV."),
            br(),
            actionButton('jumpToUserGuide', 'User Guide'),
@@ -32,19 +35,6 @@ ui <- navbarPage(
            br(),
            actionButton('jumpToUseCase', 'Example Use Cases'),
            p("Hypothetical scenarios of highlighting the Shiny-SoSV’s utility.")
-           #fluidRow(column(2,actionButton('jumpToInstallation', 'Installation')),
-           #         column(10, p("Explanation of Shiny-SoSV’s user interface.")
-           #         )),
-           #br(),
-           #fluidRow(column(2, actionButton('jumpToUserGuide', 'User Guide')),
-           #         column(10, p("Explanation of Shiny-SoSV’s user interface.")
-           #         )),
-           #br(),
-           #fluidRow(column(2, actionButton('jumpToUseCase', 'Example Use Cases')),
-           #         column(10, p("Hypothetical scenarios of highlighting the Shiny-SoSV’s utility.")
-           #         ))
-           
-           
            ),
   
   tabPanel(shinyjs::useShinyjs(),title = "Shiny-SoSV", value = "evaluation",#tweaks,
@@ -100,23 +90,10 @@ ui <- navbarPage(
                     fluidRow(column(6,tableOutput('table1')),column(6,tableOutput('table2'))),
                     width=9))
     ),
-  tabPanel(title = "Installation", value = "installation",
-           h4("Direct Web Access"),
-           p("Shiny-SoSV is hosted on shinyapp.io. The easiest way to access Shiny-SoSV is via the direct URL,", em("https://hcpcg.shinyapps.io/Shiny-SoSV/.")),
-           #br(),
-           h4("Launching from the GitHub repository"),
-           p("Download R or RStudio and run the following commands once to set up the environment:"), 
-           code("install.packages(c('shiny','shinyjs','ggplot2', 'gridExtra', 'ggsci'))"),
-           br(),
-           br(),
-           p("Run the shiny app with command in R:"),
-           code("library(shiny)"),
-           br(),
-           code("runGitHub('Shiny-SoSV', 'tgong1')"),
-           br(),
-           br(),
+  tabPanel(title = "GitHub", value = "GitHub",
+           
            h4("GitHub"),
-           p("Souce code is available at the GitHub repository tgong1/Shiny-SoSV."),
+           p("If you want your own copy of Shiny-SoSV, souce code is available at the GitHub repository tgong1/Shiny-SoSV."),
            p("To copy the repo to your local machine, use the command:"),
            code("git clone https://github.com/tgong1/Shiny-SoSV.git"),
            br(),
@@ -211,7 +188,7 @@ ui <- navbarPage(
 server <- function(input, output, session)({
   observeEvent(input$jumpToInstallation, {
     updateTabsetPanel(session, "Shiny-SoSV",
-                      selected = "installation")
+                      selected = "GitHub")
   })
   
   observeEvent(input$jumpToUserGuide, {
