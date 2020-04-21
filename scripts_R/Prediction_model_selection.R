@@ -6,7 +6,7 @@ for (i in c(1:length(single_SV_caller))){
                            paste0(single_SV_caller[i],single_SV_caller[!(c(1:length(single_SV_caller)) %in% i)],"Intersect"))
 }
 SV_caller <- c(single_SV_caller,combine_SV_SVcaller)
-dat_all <- read.csv("./summary_stat.csv"))
+dat_all <- read.csv("./data_SV/summary_stat.csv"))
 
 model1_default <- paste0("gam( Sensitivity ~ te(VAF,T_coverage) + te(VAF,BND_threshold) + te(T_coverage,BND_threshold) + te(VAF, N_coverage), data=dat, family=betar(link='logit'), method='REML')")
 model2_default <- paste0("gam( Sensitivity ~ te(VAF,T_coverage) +  te(VAF,BND_threshold) + te(VAF, N_coverage), data=dat, family=betar(link='logit'), method='REML')")
