@@ -7,6 +7,7 @@ for (i in c(1:length(single_SV_caller))){
 }
 SV_caller <- c(single_SV_caller,combine_SV_SVcaller)
 
+### Sensitivity models
 dat_all <- read.csv("./data_SV/summary_stat.csv")
 data <- dat_all
 model2 <- paste0("gam( Sensitivity ~ te(VAF,T_coverage) +  te(VAF,BND_threshold) + te(VAF, N_coverage), data=dat, family=betar(link='logit'), method='REML')")
@@ -26,7 +27,7 @@ for(i in c(1:5)){
   }
 }
 
-dat_all <- read.csv("./data/summary_stat_union_intersection.csv")
+dat_all <- read.csv("./data_SV/summary_stat_union_intersection.csv")
 data <- dat_all
 for(i in c(6:length(SV_caller))){
   dat <- data[data$Caller == SV_caller[i],]
@@ -44,7 +45,8 @@ for(i in c(6:length(SV_caller))){
 }
 save(list = paste0("gamsen_", SV_caller),file = "./data/gamsen.RData")
 
-dat_all <- read.csv("./data/summary_stat.csv")
+### Precision models
+dat_all <- read.csv("./data_SV/summary_stat.csv")
 data <- dat_all
 data <- data[!is.na(data$Precision),]
 data$Precision_offset <- data$Precision
@@ -70,7 +72,7 @@ for(i in c(1:5)){
   }
 }
 
-dat_all <- read.csv("./data/summary_stat_union_intersection.csv")
+dat_all <- read.csv("./data_SV/summary_stat_union_intersection.csv")
 data <- dat_all
 data <- data[!is.na(data$Precision),]
 data$Precision_offset <- data$Precision

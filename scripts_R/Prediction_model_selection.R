@@ -1,3 +1,4 @@
+### Sensitivty and precision model comparison and delection (Table 2)
 require(mgcv)
 single_SV_caller <- c("Manta","Lumpy","GRIDSS","SvABA","Delly")
 combine_SV_SVcaller <- c()
@@ -17,7 +18,7 @@ model5_default <- paste0("gam( Sensitivity ~ te(VAF,T_coverage) +  BND_threshold
 model_all <- c(model1_default, model2_default,model3_default, model4_default,model5_default)
 model_names_all <- c("model1_default", "model2_default", "model3_default", "model4_default", "model5_default")
 
-data <- dat_all[dat_all$REP != "SVEngine2",]
+data <- dat_all[dat_all$REP != "SVEngine3",]
 leave_index <- list(data$VAF == 0.12,
                     data$VAF == 0.25,
                     data$VAF == 0.4,
@@ -116,7 +117,7 @@ df <- data.frame(rbind(cbind(RMSE, model = model_names,value = "RMSE"),
                        cbind(AIC_caller, model = model_names, value = "AIC")))
 rownames(df) <- paste0(df$model,"_",df$value)
 
-write.csv(df,"./data/RMSE_MAE_AIC_sensitivity.csv")
+write.csv(df,"./data_SV/RMSE_MAE_AIC_sensitivity.csv")
 
 
 model1_default <- paste0("gam( Precision ~ te(VAF,T_coverage) + te(VAF,BND_threshold) + te(T_coverage,BND_threshold) + N_coverage, data=dat, family=betar(link='logit'), method='REML')")
@@ -129,8 +130,7 @@ model6_default <- paste0("gam( Precision ~ VAF + T_coverage + N_coverage + BND_t
 model <- c( model1_default, model2_default, model3_default, model4_default, model5_default, model6_default)
 model_names <- c("model1_default", "model2_default", "model3_default", "model4_default", "model5_default", "model6_default")
 
-
-data <- dat_all[dat_all$REP != "SVEngine2",]
+data <- dat_all[dat_all$REP != "SVEngine3",]
 data <- data[!is.na(data$Precision),]
 data$Precision_offset <- data$Precision
 data$Precision_offset[data$Precision==1] = 0.99999
@@ -227,5 +227,5 @@ df <- data.frame(rbind(cbind(RMSE,value = "RMSE", model = model_names),
                        cbind(MAE,value= "MAE", model = model_names), 
                        cbind(AIC_caller,value = "AIC", model = model_names)))
 rownames(df) <- paste0(df$model,"_",df$value)
-write.csv(df,"./data/RMSE_MAE_AIC_precision.csv")
+write.csv(df,"./data_SV/RMSE_MAE_AIC_precision.csv")
 
