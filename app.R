@@ -5,31 +5,52 @@ library(gridExtra)
 # Source helpers ----
 source("helpers.R")
 
-ui <- shinyUI(bootstrapPage( 
-  title="Shiny-SoSV", 
+ui <- shinyUI(
+  bootstrapPage( 
+   
+  title="Shiny-SoSV",
+  
+  #fluidPage(
+  #list(tags$head(HTML('<link rel="icon", href="logo.png", type="image/png" />'))
+  #),
+  
+  #tagList(
+    #tags$head(tags$script(type="text/javascript", src = "code.js")),
+    tags$style(HTML(".navbar-default .navbar-nav > li > a {color:black;}
+                    .navbar-default .navbar-nav > .active > a,
+                  .navbar-default .navbar-nav > .active > a:focus,
+                  .navbar-default .navbar-nav > .active > a:hover {color: white;background-color: #337ab7; font-weight: bold;}
+                  .navbar-default .navbar-nav > li > a:hover {color: white; background-color:#337ab7; font-weight: bold;}
+                  ")),
   navbarPage(
     
     #title='',
     #title='Shiny-SoSV!',
+    #title=div(img(src ="logo.pdf",height= "52px", width = "145px", align = "left",style = "margin:-15px 0px")),
+    title=div(img(src ="logo_hcpcgcolors_capSV.png",height= "56px", width = "99px", align = "left",style = "margin:-10px 0px")),
     id = "Shiny-SoSV",
     
-    tags$style(HTML(".navbar-default .navbar-nav > li > a {color:black;}
-                    .navbar-default .navbar-nav > .active > a,
-                    .navbar-default .navbar-nav > .active > a:focus,
-                    .navbar-default .navbar-nav > .active > a:hover {color: white;background-color: #337ab7; font-weight: bold;}
-                    .navbar-default .navbar-nav > li > a:hover {color: white; background-color:#337ab7; font-weight: bold;}
-                    ")),
-  tabPanel(title = "Home", value = "introduction", fluidRow(column(width=10,offset=1,
-           h1("Shiny-SoSV", align = "center"),
-           h3("A web-based power calculator for somatic structural variant detection", align = "center"),
-           h5("Shiny-SoSV provides an interactive and visual platform to explore the impact of different parameters on the power to detect somatic structural variants from short-read whole genome sequencing.", align = "center"),
+    
+    
+  tabPanel(title = "Home", 
+           value = "introduction", 
+           fluidRow(column(width=10,offset=1,
+           img(src = "logo_hcpcgcolors_capSV.png",height="30%", width="30%",style = "display: block; margin-left: auto; margin-right: auto; margin-top: 0px; margin-bottom: -25px"), 
+           #fluidRow(column(width = 5, offset = 2,
+           #                img(src = "logo_hcpcgcolors_capSV.png",height="30%", width="30%",style = "display: block; margin-left: auto; margin-right: auto; margin-top: 0px; margin-bottom: -25px")),
+           #         column(width = 2, offset = 8,
+           #                img(src = "lablogo.png",height="30%", width="30%"))),
+           #h1("Shiny-SoSV", align = "center"),
+           h3("A web-based performance calculator for somatic structural variant detection", align = "center"),
+           h5("Shiny-SoSV provides an interactive and visual platform to explore the impact of different parameters on the performance to detect somatic structural variants from short-read whole genome sequencing.", align = "center"),
            br(),
            p("Somatic structural variants are an important contributor to cancer development and evolution. ",
-             "Multiple studies have shown that accurate detection of these complex variants from whole genome sequencing data is influenced by many parameters. ",
-             "However, there is no tool for estimating the power of somatic structural variant detection or that could help guide study design. ",
-             "To address this, we developed Shiny-SoSV, an online power calculator for determining the impact of common variables on somatic detection sensitivity and precision, including choice of variant detection tools, sequencing depth of coverage, variant allele fraction, and variant breakpoint resolution. ", 
-             "Using simulation studies, we determined singular and combinatoric effects of these variables, modelled the results using a generalised additive model, allowing structural variant detection power to be predicted for any combination of predictors. ",
-             "Shiny-SoSV provides an interactive and visual platform for users to easily compare individual and combined impact of different parameters, and predict the performance of a proposed study design, on somatic structural variant detection ",em("in silico"),", before commencement of any benchwork. "),
+             "Accurate detection of these complex variants from whole genome sequencing data is influenced by a multitude of parameters. ",
+             "However, there are currently no tools for guiding study design nor are there applications that could predict the performance of somatic structural variant detection. ",
+             "To address this gap, we developed Shiny-SoSV, a user-friendly web-based calculator for determining the impact of common variables on the sensitivity and precision of somatic structural variant detection, including choice of variant detection tool, sequencing depth of coverage, variant allele fraction, and variant breakpoint resolution. ", 
+             "Using simulation studies, we determined singular and combinatoric effects of these variables, modelled the results using a generalised additive model, allowing structural variant detection performance to be predicted for any combination of predictors. ",
+             "Shiny-SoSV provides an interactive and visual platform for users to easily compare individual and combined impact of different parameters. ",
+             "It predicts the performance of a proposed study design, on somatic structural variant detection, prior to the commencement of benchwork. "),
            p("If you use this web app, please cite:"),
            p("Tingting Gong, Vanessa M Hayes, Eva KF Chan. Shiny-SoSV: A web app for interactive evaluation of somatic structural variant calls. BioRxiv 668723; doi:", 
              a("https://doi.org/10.1101/668723", href="https://doi.org/10.1101/668723")),
@@ -53,29 +74,23 @@ ui <- shinyUI(bootstrapPage(
   ),
   
   tabPanel(shinyjs::useShinyjs(),title = "Shiny-SoSV", value = "evaluation",#tweaks,
-           sidebarLayout(fluid=FALSE,sidebarPanel(
+           sidebarLayout(fluid=TRUE, sidebarPanel(
              checkboxGroupInput(inputId = "SVCaller3",
                                 label = ("SV Caller(s)"),
                                 choiceNames = list("Manta  ", "Lumpy ", "GRIDSS ", "SvABA ", "Delly "),
                                 choiceValues = c("Manta", "Lumpy", "GRIDSS", "SvABA", "Delly"),
-                                #choiceNames = list("Manta  ", "Lumpy ", "GRIDSS ", "Delly ", "SvABA "),
-                                #choiceValues = c("Manta", "Lumpy", "GRIDSS", "Delly", "SvABA"),
-                                selected = "Manta",inline=TRUE,width='400px'),
+                                selected = "Manta", inline=TRUE),
              checkboxGroupInput(inputId = "SVCaller3.1",
                                 label = ("SV Callers Union"),
                                 choiceNames = list("Manta  ", "Lumpy ", "GRIDSS ", "SvABA ", "Delly "),
                                 choiceValues = c("Manta", "Lumpy", "GRIDSS", "SvABA", "Delly"),
-                                #choiceNames = list("Manta  ", "Lumpy ", "GRIDSS ", "Delly ", "SvABA "),
-                                #choiceValues = c("Manta", "Lumpy", "GRIDSS", "Delly", "SvABA"),
-                                selected = c(),inline=TRUE,width='400px'),
+                                selected = c(), inline=TRUE),
                                 #selected = c("Manta","Lumpy"),inline=TRUE,width='400px'),
              checkboxGroupInput(inputId = "SVCaller3.2",
                                 label = ("SV Caller Intersection"),
                                 choiceNames = list("Manta  ", "Lumpy ", "GRIDSS ", "SvABA ", "Delly "),
                                 choiceValues = c("Manta", "Lumpy", "GRIDSS", "SvABA", "Delly"),
-                                #choiceNames = list("Manta  ", "Lumpy ", "GRIDSS ", "Delly ", "SvABA "),
-                                #choiceValues = c("Manta", "Lumpy", "GRIDSS", "Delly", "SvABA"),
-                                selected = c(),inline=TRUE,width='400px'),
+                                selected = c(), inline=TRUE),
              sliderInput("VAF3", "Tumour purity/VAF:",
                          min = 0.05, max = 1, value = 0.5, step= 0.01),
              checkboxGroupInput("VAF3.1",
