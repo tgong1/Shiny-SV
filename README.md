@@ -7,7 +7,8 @@ Gong T, Hayes VM, Chan EKF (2020) Shiny-SoSV: A web-based performance calculator
 
 # Launch Shiny-SoSV
 Shiny-SoSV does not need to be installed and is hosted on Shinyapps.so: https://hcpcg.shinyapps.io/Shiny-SoSV/.
-To obtain the code:
+
+To obtain the code and prediction models to your local machine, run the command in a bash terminal:
 ```
 git clone https://github.com/tgong1/Shiny-SoSV.git
 ```
